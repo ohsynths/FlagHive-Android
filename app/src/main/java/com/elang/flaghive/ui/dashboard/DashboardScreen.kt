@@ -99,10 +99,19 @@ fun DashboardScreen(
                 }
 
                 item {
-                    Text(
-                        text = "Recent Writeups",
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Recent Writeups",
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                        TextButton(onClick = { navController.navigate(Screen.WriteupList.route) }) {
+                            Text("All Writeups")
+                        }
+                    }
                 }
 
                 if (uiState.recentWriteups.isEmpty()) {
@@ -145,16 +154,7 @@ fun DashboardScreen(
                     }
                 }
 
-                item {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Button(onClick = { navController.navigate(Screen.WriteupList.route) }) {
-                            Text("All Writeups")
-                        }
 
-                    }
-                }
             }
         }
     }
