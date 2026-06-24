@@ -45,7 +45,7 @@ fun SearchScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             if (uiState.categories.isNotEmpty()) {
-                Row(horizontalScroll(rememberScrollState())) {
+                Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
                     FilterChip(
                         selected = uiState.selectedCategoryId == null,
                         onClick = { viewModel.filterByCategory(null) },
