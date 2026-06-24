@@ -4,7 +4,6 @@ import com.elang.flaghive.data.firebase.FirestoreCollections
 import com.elang.flaghive.data.model.Bookmark
 import com.elang.flaghive.util.Resource
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
