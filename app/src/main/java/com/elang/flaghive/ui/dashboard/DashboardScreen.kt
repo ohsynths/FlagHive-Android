@@ -1,7 +1,9 @@
 package com.elang.flaghive.ui.dashboard
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
@@ -81,9 +83,9 @@ fun DashboardScreen(
                     item {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.horizontalScroll(rememberScrollState())
                         ) {
-                            uiState.categories.take(3).forEach { category ->
+                            uiState.categories.forEach { category ->
                                 AssistChip(
                                     onClick = {
                                         navController.navigate(Screen.CategoryDetail.createRoute(category.id))
