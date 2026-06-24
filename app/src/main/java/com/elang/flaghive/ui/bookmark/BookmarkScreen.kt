@@ -22,6 +22,10 @@ fun BookmarkScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.loadBookmarks()
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Bookmarks") })

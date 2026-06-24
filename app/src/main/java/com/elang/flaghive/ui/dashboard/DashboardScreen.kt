@@ -22,6 +22,10 @@ fun DashboardScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.loadDashboard()
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(

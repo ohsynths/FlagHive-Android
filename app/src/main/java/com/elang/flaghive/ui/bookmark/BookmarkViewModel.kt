@@ -30,10 +30,6 @@ class BookmarkViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(BookmarkUiState())
     val uiState: StateFlow<BookmarkUiState> = _uiState.asStateFlow()
 
-    init {
-        loadBookmarks()
-    }
-
     fun loadBookmarks() {
         viewModelScope.launch {
             _uiState.value = BookmarkUiState(isLoading = true)

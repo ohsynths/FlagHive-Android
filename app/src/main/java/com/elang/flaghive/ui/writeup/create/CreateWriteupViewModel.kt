@@ -6,6 +6,7 @@ import com.elang.flaghive.data.model.Category
 import com.elang.flaghive.data.model.Writeup
 import com.elang.flaghive.data.repository.AuthRepository
 import com.elang.flaghive.data.repository.CategoryRepository
+import com.elang.flaghive.data.repository.UserRepository
 import com.elang.flaghive.data.repository.WriteupRepository
 import com.elang.flaghive.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +28,8 @@ data class CreateWriteupUiState(
 class CreateWriteupViewModel @Inject constructor(
     private val writeupRepository: WriteupRepository,
     private val categoryRepository: CategoryRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CreateWriteupUiState())
@@ -61,6 +63,9 @@ class CreateWriteupViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
             val userId = authRepository.getCurrentUserId()
+            val userResult = userRepository.getUserProfile(userId)
+            val authorName = (userResult as? Resource.Success)?.data?.displayName ?: ""
+
             val writeup = Writeup(
                 title = title,
                 content = content,
@@ -70,7 +75,7 @@ class CreateWriteupViewModel @Inject constructor(
                 challengeName = challengeName,
                 difficulty = difficulty,
                 authorId = userId,
-                authorName = ""
+                authorName = authorName
             )
 
             when (val result = writeupRepository.createWriteup(writeup)) {

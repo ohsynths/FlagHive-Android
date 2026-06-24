@@ -32,10 +32,6 @@ class ProfileViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
-    init {
-        loadProfile()
-    }
-
     fun loadProfile() {
         viewModelScope.launch {
             _uiState.value = ProfileUiState(isLoading = true)
