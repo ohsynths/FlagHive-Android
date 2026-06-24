@@ -15,7 +15,8 @@ import javax.inject.Inject
 data class AdminWriteupUiState(
     val isLoading: Boolean = true,
     val writeups: List<Writeup> = emptyList(),
-    val error: String? = null
+    val error: String? = null,
+    val deleteError: String? = null
 )
 
 @HiltViewModel
@@ -53,11 +54,18 @@ class AdminWriteupViewModel @Inject constructor(
 
     fun deleteWriteup(writeupId: String) {
         viewModelScope.launch {
-            when (writeupRepository.deleteWriteup(writeupId)) {
+            _uiState.value = _uiState.value.copy(deleteError = null)
+            when (val result = writeupRepository.deleteWriteup(writeupId)) {
                 is Resource.Success -> loadWriteups()
-                is Resource.Error -> {}
+                is Resource.Error -> {
+                    _uiState.value = _uiState.value.copy(deleteError = result.message)
+                }
                 is Resource.Loading -> {}
             }
         }
+    }
+
+    fun clearDeleteError() {
+        _uiState.value = _uiState.value.copy(deleteError = null)
     }
 }

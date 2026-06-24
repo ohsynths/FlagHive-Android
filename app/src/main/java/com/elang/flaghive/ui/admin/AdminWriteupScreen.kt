@@ -24,7 +24,15 @@ fun AdminWriteupScreen(
     viewModel: AdminWriteupViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
     var showDeleteDialog by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(uiState.deleteError) {
+        uiState.deleteError?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.clearDeleteError()
+        }
+    }
 
     if (showDeleteDialog != null) {
         AlertDialog(
@@ -57,7 +65,8 @@ fun AdminWriteupScreen(
                     }
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         if (uiState.isLoading) {
             Box(
