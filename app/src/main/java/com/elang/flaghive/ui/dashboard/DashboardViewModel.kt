@@ -44,10 +44,11 @@ class DashboardViewModel @Inject constructor(
 
             val writeups = when (writeupsResult) {
                 is Resource.Success -> writeupsResult.data
-                else -> {
+                is Resource.Error -> {
                     _uiState.value = _uiState.value.copy(error = writeupsResult.message)
                     emptyList()
                 }
+                is Resource.Loading -> emptyList()
             }
 
             val categories = when (categoriesResult) {
