@@ -157,9 +157,7 @@ fun DashboardScreen(
                         Button(onClick = { navController.navigate(Screen.WriteupList.route) }) {
                             Text("All Writeups")
                         }
-                        OutlinedButton(onClick = { navController.navigate(Screen.CreateWriteup.route) }) {
-                            Text("New Writeup")
-                        }
+
                     }
                 }
             }

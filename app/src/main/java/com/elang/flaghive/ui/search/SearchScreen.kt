@@ -1,11 +1,11 @@
 package com.elang.flaghive.ui.search
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -42,7 +42,27 @@ fun SearchScreen(
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+
+            if (uiState.categories.isNotEmpty()) {
+                Row(horizontalScroll(rememberScrollState())) {
+                    FilterChip(
+                        selected = uiState.selectedCategoryId == null,
+                        onClick = { viewModel.filterByCategory(null) },
+                        label = { Text("All") },
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    uiState.categories.forEach { category ->
+                        FilterChip(
+                            selected = uiState.selectedCategoryId == category.id,
+                            onClick = { viewModel.filterByCategory(category.id) },
+                            label = { Text(category.name) },
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+            }
 
             if (uiState.isLoading) {
                 Box(

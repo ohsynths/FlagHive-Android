@@ -1,9 +1,11 @@
 package com.elang.flaghive.ui.writeup.list
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -42,7 +44,7 @@ fun WriteupListScreen(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(text = uiState.error!!, color = MaterialTheme.colorScheme.error)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = { viewModel.loadWriteups() }) {
+                    Button(onClick = { viewModel.loadData() }) {
                         Text("Retry")
                     }
                 }
@@ -55,6 +57,26 @@ fun WriteupListScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                item {
+                    Row(horizontalScroll(rememberScrollState())) {
+                        FilterChip(
+                            selected = uiState.selectedCategoryId == null,
+                            onClick = { viewModel.filterByCategory(null) },
+                            label = { Text("All") },
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        uiState.categories.forEach { category ->
+                            FilterChip(
+                                selected = uiState.selectedCategoryId == category.id,
+                                onClick = { viewModel.filterByCategory(category.id) },
+                                label = { Text(category.name) },
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+
                 items(uiState.writeups) { writeup ->
                     Card(
                         modifier = Modifier
