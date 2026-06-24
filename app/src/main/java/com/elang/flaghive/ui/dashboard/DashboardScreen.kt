@@ -96,11 +96,6 @@ fun DashboardScreen(
                         }
                     }
 
-                    item {
-                        TextButton(onClick = { navController.navigate(Screen.CategoryList.route) }) {
-                            Text("View All Categories")
-                        }
-                    }
                 }
 
                 item {
