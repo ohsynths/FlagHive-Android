@@ -17,13 +17,13 @@ class BookmarkRepository @Inject constructor(
         return try {
             val snapshots = firestore.collection(FirestoreCollections.BOOKMARKS)
                 .whereEqualTo("userId", userId)
-                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .await()
 
-            val bookmarks = snapshots.documents.map { doc ->
-                doc.toObject(Bookmark::class.java)!!.copy(id = doc.id)
-            }
+            val bookmarks = snapshots.documents.mapNotNull { doc ->
+                doc.toObject(Bookmark::class.java)?.copy(id = doc.id)
+            }.sortedByDescending { it.createdAt }
+
             Resource.Success(bookmarks)
         } catch (e: Exception) {
             Resource.Error(e.message ?: "Failed to get bookmarks")
