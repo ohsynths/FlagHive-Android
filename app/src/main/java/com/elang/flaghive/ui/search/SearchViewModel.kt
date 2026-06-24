@@ -8,8 +8,6 @@ import com.elang.flaghive.data.repository.CategoryRepository
 import com.elang.flaghive.data.repository.WriteupRepository
 import com.elang.flaghive.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,11 +32,11 @@ class SearchViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
 
-    private var searchJob: Job? = null
     private var allResults: List<Writeup> = emptyList()
 
     init {
         loadCategories()
+        loadAllWriteups()
     }
 
     private fun loadCategories() {
@@ -52,52 +50,53 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun onQueryChanged(query: String) {
-        _uiState.value = _uiState.value.copy(query = query)
-        searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            delay(500)
-            if (query.isNotBlank()) {
-                _uiState.value = _uiState.value.copy(isLoading = true)
-                when (val result = writeupRepository.searchWriteups(query)) {
-                    is Resource.Success -> {
-                        allResults = result.data
-                        applyCategoryFilter()
-                    }
-                    is Resource.Error -> {
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
-                            error = result.message
-                        )
-                    }
-                    is Resource.Loading -> {}
+    private fun loadAllWriteups() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            when (val result = writeupRepository.getWriteups()) {
+                is Resource.Success -> {
+                    allResults = result.data
+                    applyFilters()
                 }
-            } else {
-                allResults = emptyList()
-                _uiState.value = _uiState.value.copy(
-                    query = query,
-                    isLoading = false,
-                    results = emptyList(),
-                    error = null
-                )
+                is Resource.Error -> {
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = result.message
+                    )
+                }
+                is Resource.Loading -> {}
             }
         }
     }
 
-    fun filterByCategory(categoryId: String?) {
-        _uiState.value = _uiState.value.copy(selectedCategoryId = categoryId)
-        applyCategoryFilter()
+    fun onQueryChanged(query: String) {
+        _uiState.value = _uiState.value.copy(query = query)
+        applyFilters()
     }
 
-    private fun applyCategoryFilter() {
-        val filtered = if (_uiState.value.selectedCategoryId == null) {
-            allResults
-        } else {
-            allResults.filter { it.categoryId == _uiState.value.selectedCategoryId }
+    fun filterByCategory(categoryId: String?) {
+        _uiState.value = _uiState.value.copy(selectedCategoryId = categoryId)
+        applyFilters()
+    }
+
+    private fun applyFilters() {
+        val query = _uiState.value.query.lowercase()
+        var filtered = allResults
+
+        if (query.isNotBlank()) {
+            filtered = filtered.filter {
+                it.title.lowercase().contains(query) ||
+                it.eventName.lowercase().contains(query) ||
+                it.challengeName.lowercase().contains(query) ||
+                it.categoryName.lowercase().contains(query)
+            }
         }
-        _uiState.value = _uiState.value.copy(
-            results = filtered,
-            isLoading = false
-        )
+
+        val selectedCategoryId = _uiState.value.selectedCategoryId
+        if (selectedCategoryId != null) {
+            filtered = filtered.filter { it.categoryId == selectedCategoryId }
+        }
+
+        _uiState.value = _uiState.value.copy(results = filtered, isLoading = false)
     }
 }

@@ -76,12 +76,6 @@ fun SearchScreen(
                     text = uiState.error!!,
                     color = MaterialTheme.colorScheme.error
                 )
-            } else if (uiState.query.isBlank()) {
-                Text(
-                    text = "Type to search writeups",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
             } else if (uiState.results.isEmpty()) {
                 Text(
                     text = "No results found",
