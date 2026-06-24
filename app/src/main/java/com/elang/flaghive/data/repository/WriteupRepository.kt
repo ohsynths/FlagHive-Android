@@ -33,13 +33,13 @@ class WriteupRepository @Inject constructor(
         return try {
             val snapshots = firestore.collection(FirestoreCollections.WRITEUPS)
                 .whereEqualTo("categoryId", categoryId)
-                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .await()
 
-            val writeups = snapshots.documents.map { doc ->
-                doc.toObject(Writeup::class.java)!!.copy(id = doc.id)
-            }
+            val writeups = snapshots.documents.mapNotNull { doc ->
+                doc.toObject(Writeup::class.java)?.copy(id = doc.id)
+            }.sortedByDescending { it.createdAt }
+
             Resource.Success(writeups)
         } catch (e: Exception) {
             Resource.Error(e.message ?: "Failed to get writeups by category")
@@ -50,13 +50,13 @@ class WriteupRepository @Inject constructor(
         return try {
             val snapshots = firestore.collection(FirestoreCollections.WRITEUPS)
                 .whereEqualTo("authorId", authorId)
-                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .await()
 
-            val writeups = snapshots.documents.map { doc ->
-                doc.toObject(Writeup::class.java)!!.copy(id = doc.id)
-            }
+            val writeups = snapshots.documents.mapNotNull { doc ->
+                doc.toObject(Writeup::class.java)?.copy(id = doc.id)
+            }.sortedByDescending { it.createdAt }
+
             Resource.Success(writeups)
         } catch (e: Exception) {
             Resource.Error(e.message ?: "Failed to get writeups by author")
