@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -12,9 +11,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.elang.flaghive.data.firebase.SeedData
 import com.elang.flaghive.data.model.UserRole
 import com.elang.flaghive.data.repository.AuthRepository
 import com.elang.flaghive.data.repository.UserRepository
@@ -32,6 +31,7 @@ import javax.inject.Inject
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.google.firebase.firestore.FirebaseFirestore
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -42,12 +42,15 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var userRepository: UserRepository
 
+    @Inject
+    lateinit var firestore: FirebaseFirestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             FlagHiveTheme {
-                FlagHiveApp(authRepository, userRepository)
+                FlagHiveApp(authRepository, userRepository, firestore)
             }
         }
     }
@@ -56,11 +59,16 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun FlagHiveApp(
     authRepository: AuthRepository,
-    userRepository: UserRepository
+    userRepository: UserRepository,
+    firestore: FirebaseFirestore
 ) {
     val navController = rememberNavController()
     val isLoggedIn = authRepository.isLoggedIn
     var isAdmin by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        SeedData.seedIfEmpty(firestore)
+    }
 
     LaunchedEffect(isLoggedIn) {
         if (isLoggedIn) {
@@ -85,7 +93,7 @@ fun FlagHiveApp(
         bottomBar = {
             if (showBottomBar) {
                 NavigationBar {
-                    bottomNavItems.forEach { item ->
+                    bottomNavItems.take(2).forEach { item ->
                         NavigationBarItem(
                             icon = { Icon(item.icon, contentDescription = item.label) },
                             label = { Text(item.label) },
@@ -103,6 +111,7 @@ fun FlagHiveApp(
                             }
                         )
                     }
+
                     NavigationBarItem(
                         icon = { Icon(Icons.Filled.Add, contentDescription = "New Writeup") },
                         label = { Text("New") },
@@ -113,6 +122,25 @@ fun FlagHiveApp(
                             }
                         }
                     )
+
+                    bottomNavItems.drop(2).forEach { item ->
+                        NavigationBarItem(
+                            icon = { Icon(item.icon, contentDescription = item.label) },
+                            label = { Text(item.label) },
+                            selected = currentDestination?.hierarchy?.any {
+                                it.route == item.screen.route
+                            } == true,
+                            onClick = {
+                                navController.navigate(item.screen.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
