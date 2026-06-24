@@ -32,7 +32,6 @@ import javax.inject.Inject
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -40,34 +39,34 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var authRepository: AuthRepository
 
+    @Inject
+    lateinit var userRepository: UserRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             FlagHiveTheme {
-                FlagHiveApp(authRepository)
+                FlagHiveApp(authRepository, userRepository)
             }
         }
     }
 }
 
 @Composable
-fun FlagHiveApp(authRepository: AuthRepository) {
+fun FlagHiveApp(
+    authRepository: AuthRepository,
+    userRepository: UserRepository
+) {
     val navController = rememberNavController()
     val isLoggedIn = authRepository.isLoggedIn
     var isAdmin by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(isLoggedIn) {
         if (isLoggedIn) {
-            scope.launch {
-                val userRepo = UserRepository(
-                    com.google.firebase.firestore.FirebaseFirestore.getInstance()
-                )
-                when (val result = userRepo.getUserProfile(authRepository.getCurrentUserId())) {
-                    is Resource.Success -> isAdmin = result.data.role == UserRole.ADMIN
-                    else -> isAdmin = false
-                }
+            when (val result = userRepository.getUserProfile(authRepository.getCurrentUserId())) {
+                is Resource.Success -> isAdmin = result.data.role == UserRole.ADMIN
+                else -> isAdmin = false
             }
         }
     }
