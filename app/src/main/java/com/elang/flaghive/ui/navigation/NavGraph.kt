@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.elang.flaghive.ui.admin.AdminWriteupScreen
 import com.elang.flaghive.ui.admin.ManageCategoriesScreen
 import com.elang.flaghive.ui.admin.ManageUsersScreen
 import com.elang.flaghive.ui.auth.LoginScreen
@@ -87,6 +88,9 @@ fun NavGraph(
             }
             composable(Screen.ManageCategories.route) {
                 ManageCategoriesScreen(navController)
+            }
+            composable(Screen.ManageWriteups.route) {
+                AdminWriteupScreen(navController)
             }
         }
     }

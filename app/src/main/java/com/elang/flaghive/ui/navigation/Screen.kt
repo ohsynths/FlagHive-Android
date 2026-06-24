@@ -29,6 +29,7 @@ sealed class Screen(val route: String) {
     data object AdminDashboard : Screen("admin")
     data object ManageUsers : Screen("admin/users")
     data object ManageCategories : Screen("admin/categories")
+    data object ManageWriteups : Screen("admin/writeups")
 }
 
 data class BottomNavItem(
