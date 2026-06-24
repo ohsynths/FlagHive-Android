@@ -65,8 +65,8 @@ class SearchViewModel @Inject constructor(
                         applyCategoryFilter()
                     }
                     is Resource.Error -> {
-                        _uiState.value = SearchUiState(
-                            query = query,
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
                             error = result.message
                         )
                     }
@@ -74,7 +74,12 @@ class SearchViewModel @Inject constructor(
                 }
             } else {
                 allResults = emptyList()
-                _uiState.value = SearchUiState()
+                _uiState.value = _uiState.value.copy(
+                    query = query,
+                    isLoading = false,
+                    results = emptyList(),
+                    error = null
+                )
             }
         }
     }
