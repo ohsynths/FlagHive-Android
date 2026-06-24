@@ -120,15 +120,20 @@ class WriteupRepository @Inject constructor(
     suspend fun searchWriteups(query: String): Resource<List<Writeup>> {
         return try {
             val snapshots = firestore.collection(FirestoreCollections.WRITEUPS)
-                .orderBy("title")
-                .startAt(query)
-                .endAt(query + "\uf8ff")
+                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .await()
 
-            val writeups = snapshots.documents.map { doc ->
-                doc.toObject(Writeup::class.java)!!.copy(id = doc.id)
-            }
+            val lowerQuery = query.lowercase()
+            val writeups = snapshots.documents
+                .mapNotNull { doc -> doc.toObject(Writeup::class.java)?.copy(id = doc.id) }
+                .filter {
+                    it.title.lowercase().contains(lowerQuery) ||
+                    it.eventName.lowercase().contains(lowerQuery) ||
+                    it.challengeName.lowercase().contains(lowerQuery) ||
+                    it.categoryName.lowercase().contains(lowerQuery)
+                }
+
             Resource.Success(writeups)
         } catch (e: Exception) {
             Resource.Error(e.message ?: "Failed to search writeups")
