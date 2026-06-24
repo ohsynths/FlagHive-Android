@@ -42,11 +42,18 @@ class AuthRepository @Inject constructor(
             val result = auth.createUserWithEmailAndPassword(email, password).await()
             val uid = result.user?.uid ?: return Resource.Error("Registration failed")
 
+            val userCount = firestore.collection(FirestoreCollections.USERS)
+                .get()
+                .await()
+                .size()
+
+            val role = if (userCount == 0) UserRole.ADMIN else UserRole.USER
+
             val user = User(
                 uid = uid,
                 email = email,
                 displayName = displayName,
-                role = UserRole.USER
+                role = role
             )
 
             firestore.collection(FirestoreCollections.USERS)
