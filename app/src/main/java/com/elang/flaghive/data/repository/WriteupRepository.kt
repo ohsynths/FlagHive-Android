@@ -16,13 +16,13 @@ class WriteupRepository @Inject constructor(
     suspend fun getWriteups(): Resource<List<Writeup>> {
         return try {
             val snapshots = firestore.collection(FirestoreCollections.WRITEUPS)
-                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .await()
 
-            val writeups = snapshots.documents.map { doc ->
-                doc.toObject(Writeup::class.java)!!.copy(id = doc.id)
-            }
+            val writeups = snapshots.documents.mapNotNull { doc ->
+                doc.toObject(Writeup::class.java)?.copy(id = doc.id)
+            }.sortedByDescending { it.createdAt }
+
             Resource.Success(writeups)
         } catch (e: Exception) {
             Resource.Error(e.message ?: "Failed to get writeups")
@@ -120,7 +120,6 @@ class WriteupRepository @Inject constructor(
     suspend fun searchWriteups(query: String): Resource<List<Writeup>> {
         return try {
             val snapshots = firestore.collection(FirestoreCollections.WRITEUPS)
-                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .await()
 
@@ -133,6 +132,7 @@ class WriteupRepository @Inject constructor(
                     it.challengeName.lowercase().contains(lowerQuery) ||
                     it.categoryName.lowercase().contains(lowerQuery)
                 }
+                .sortedByDescending { it.createdAt }
 
             Resource.Success(writeups)
         } catch (e: Exception) {
