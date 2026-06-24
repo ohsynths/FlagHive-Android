@@ -58,7 +58,7 @@ fun WriteupListScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item {
-                    Row(horizontalScroll(rememberScrollState())) {
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
                         FilterChip(
                             selected = uiState.selectedCategoryId == null,
                             onClick = { viewModel.filterByCategory(null) },
