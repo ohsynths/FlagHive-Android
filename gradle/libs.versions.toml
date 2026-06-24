@@ -14,7 +14,7 @@ hiltNavigationCompose = "1.2.0"
 navigationCompose = "2.8.9"
 lifecycleViewmodelCompose = "2.6.1"
 ksp = "2.3.9"
-composeMarkdown = "0.6.1"
+composeMarkdown = "0.7.0"
 
 [libraries]
 # Core
@@ -48,7 +48,7 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
 # compose-markdown
-compose-markdown = { group = "com.github.gpportal", name = "compose-markdown", version.ref = "composeMarkdown" }
+compose-markdown = { group = "com.github.jeziellago", name = "compose-markdown", version.ref = "composeMarkdown" }
 
 # Test
 junit = { group = "junit", name = "junit", version.ref = "junit" }
