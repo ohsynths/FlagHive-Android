@@ -13,7 +13,6 @@ import com.elang.flaghive.ui.auth.LoginScreen
 import com.elang.flaghive.ui.auth.RegisterScreen
 import com.elang.flaghive.ui.bookmark.BookmarkScreen
 import com.elang.flaghive.ui.category.CategoryDetailScreen
-import com.elang.flaghive.ui.category.CategoryListScreen
 import com.elang.flaghive.ui.dashboard.DashboardScreen
 import com.elang.flaghive.ui.profile.ProfileScreen
 import com.elang.flaghive.ui.search.SearchScreen
@@ -62,9 +61,6 @@ fun NavGraph(
         ) { backStackEntry ->
             val writeupId = backStackEntry.arguments?.getString("writeupId") ?: return@composable
             EditWriteupScreen(navController, writeupId)
-        }
-        composable(Screen.CategoryList.route) {
-            CategoryListScreen(navController)
         }
         composable(
             route = Screen.CategoryDetail.route,

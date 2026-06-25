@@ -4,6 +4,5 @@ data class User(
     val uid: String = "",
     val email: String = "",
     val displayName: String = "",
-    val role: UserRole = UserRole.USER,
-    val createdAt: Long = System.currentTimeMillis()
+    val role: UserRole = UserRole.USER
 )

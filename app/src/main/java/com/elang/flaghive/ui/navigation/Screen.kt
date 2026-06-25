@@ -19,14 +19,12 @@ sealed class Screen(val route: String) {
     data object EditWriteup : Screen("writeup/edit/{writeupId}") {
         fun createRoute(writeupId: String) = "writeup/edit/$writeupId"
     }
-    data object CategoryList : Screen("category/list")
     data object CategoryDetail : Screen("category/detail/{categoryId}") {
         fun createRoute(categoryId: String) = "category/detail/$categoryId"
     }
     data object Search : Screen("search")
     data object Bookmark : Screen("bookmark")
     data object Profile : Screen("profile")
-    data object AdminDashboard : Screen("admin")
     data object ManageUsers : Screen("admin/users")
     data object ManageCategories : Screen("admin/categories")
     data object ManageWriteups : Screen("admin/writeups")

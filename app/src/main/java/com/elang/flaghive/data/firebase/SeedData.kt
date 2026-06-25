@@ -7,12 +7,12 @@ import kotlinx.coroutines.tasks.await
 object SeedData {
 
     private val defaultCategories = listOf(
-        Category(name = "Web Exploitation", description = "Vulnerabilities and exploits in web applications", icon = "🌐"),
-        Category(name = "Cryptography", description = "Encryption, decryption, and cryptographic challenges", icon = "🔐"),
-        Category(name = "Reverse Engineering", description = "Analyzing and deconstructing binaries and software", icon = "🔍"),
-        Category(name = "Forensics", description = "Digital forensics, file analysis, and investigation", icon = "🔎"),
-        Category(name = "Binary Exploitation", description = "Buffer overflows, ROP, and binary exploitation (Pwn)", icon = "💻"),
-        Category(name = "Miscellaneous", description = "Various challenges including OSINT, steganography, and more", icon = "📦")
+        Category(name = "Web Exploitation", description = "Vulnerabilities and exploits in web applications"),
+        Category(name = "Cryptography", description = "Encryption, decryption, and cryptographic challenges"),
+        Category(name = "Reverse Engineering", description = "Analyzing and deconstructing binaries and software"),
+        Category(name = "Forensics", description = "Digital forensics, file analysis, and investigation"),
+        Category(name = "Binary Exploitation", description = "Buffer overflows, ROP, and binary exploitation (Pwn)"),
+        Category(name = "Miscellaneous", description = "Various challenges including OSINT, steganography, and more")
     )
 
     suspend fun seedIfEmpty(firestore: FirebaseFirestore) {

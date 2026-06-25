@@ -15,9 +15,6 @@ class AuthRepository @Inject constructor(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore
 ) {
-    val currentUser: com.google.firebase.auth.FirebaseUser?
-        get() = auth.currentUser
-
     val isLoggedIn: Boolean
         get() = auth.currentUser != null
 

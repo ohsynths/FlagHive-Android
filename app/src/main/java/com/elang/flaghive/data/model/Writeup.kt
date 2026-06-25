@@ -11,6 +11,5 @@ data class Writeup(
     val difficulty: String = "",
     val authorId: String = "",
     val authorName: String = "",
-    val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis()
 )

@@ -14,12 +14,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class CategoryListUiState(
-    val isLoading: Boolean = true,
-    val categories: List<Category> = emptyList(),
-    val error: String? = null
-)
-
 data class CategoryDetailUiState(
     val isLoading: Boolean = true,
     val category: Category? = null,
@@ -33,36 +27,8 @@ class CategoryViewModel @Inject constructor(
     private val writeupRepository: WriteupRepository
 ) : ViewModel() {
 
-    private val _listState = MutableStateFlow(CategoryListUiState())
-    val listState: StateFlow<CategoryListUiState> = _listState.asStateFlow()
-
     private val _detailState = MutableStateFlow(CategoryDetailUiState())
     val detailState: StateFlow<CategoryDetailUiState> = _detailState.asStateFlow()
-
-    init {
-        loadCategories()
-    }
-
-    fun loadCategories() {
-        viewModelScope.launch {
-            _listState.value = CategoryListUiState(isLoading = true)
-            when (val result = categoryRepository.getCategories()) {
-                is Resource.Success -> {
-                    _listState.value = CategoryListUiState(
-                        isLoading = false,
-                        categories = result.data
-                    )
-                }
-                is Resource.Error -> {
-                    _listState.value = CategoryListUiState(
-                        isLoading = false,
-                        error = result.message
-                    )
-                }
-                is Resource.Loading -> {}
-            }
-        }
-    }
 
     fun loadCategoryDetail(categoryId: String) {
         viewModelScope.launch {
