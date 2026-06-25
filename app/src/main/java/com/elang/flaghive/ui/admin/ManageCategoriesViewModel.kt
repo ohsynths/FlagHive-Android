@@ -93,7 +93,7 @@ class ManageCategoriesViewModel @Inject constructor(
 
     fun deleteCategory(categoryId: String) {
         viewModelScope.launch {
-            when (categoryRepository.deleteCategory(categoryId)) {
+            when (val result = categoryRepository.deleteCategory(categoryId)) {
                 is Resource.Success -> loadCategories()
                 is Resource.Error -> {
                     _uiState.value = _uiState.value.copy(error = result.message)
