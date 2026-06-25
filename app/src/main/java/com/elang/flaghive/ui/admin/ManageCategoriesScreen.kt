@@ -22,6 +22,28 @@ fun ManageCategoriesScreen(
     viewModel: ManageCategoriesViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var showDeleteDialog by remember { mutableStateOf<String?>(null) }
+
+    if (showDeleteDialog != null) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = null },
+            title = { Text("Delete Category") },
+            text = { Text("Are you sure you want to delete this category?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.deleteCategory(showDeleteDialog!!)
+                    showDeleteDialog = null
+                }) {
+                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = null }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 
     if (uiState.showDialog) {
         CategoryDialog(
@@ -85,7 +107,7 @@ fun ManageCategoriesScreen(
                             IconButton(onClick = { viewModel.showEditDialog(category) }) {
                                 Icon(Icons.Filled.Edit, contentDescription = "Edit")
                             }
-                            IconButton(onClick = { viewModel.deleteCategory(category.id) }) {
+                            IconButton(onClick = { showDeleteDialog = category.id }) {
                                 Icon(
                                     Icons.Filled.Delete,
                                     contentDescription = "Delete",

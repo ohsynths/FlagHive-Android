@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -145,10 +145,12 @@ fun FlagHiveApp(
             }
         }
     ) { innerPadding ->
-        NavGraph(
-            navController = navController,
-            isLoggedIn = isLoggedIn,
-            isAdmin = isAdmin
-        )
+        Box(modifier = Modifier.padding(innerPadding)) {
+            NavGraph(
+                navController = navController,
+                isLoggedIn = isLoggedIn,
+                isAdmin = isAdmin
+            )
+        }
     }
 }

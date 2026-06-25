@@ -68,7 +68,7 @@ class ManageCategoriesViewModel @Inject constructor(
     fun saveCategory(name: String, description: String) {
         viewModelScope.launch {
             val editing = _uiState.value.editingCategory
-            if (editing != null) {
+            val result = if (editing != null) {
                 categoryRepository.updateCategory(
                     editing.id,
                     editing.copy(name = name, description = description)
@@ -78,8 +78,16 @@ class ManageCategoriesViewModel @Inject constructor(
                     Category(name = name, description = description)
                 )
             }
-            dismissDialog()
-            loadCategories()
+            when (result) {
+                is Resource.Success -> {
+                    dismissDialog()
+                    loadCategories()
+                }
+                is Resource.Error -> {
+                    _uiState.value = _uiState.value.copy(error = result.message)
+                }
+                is Resource.Loading -> {}
+            }
         }
     }
 
@@ -88,7 +96,7 @@ class ManageCategoriesViewModel @Inject constructor(
             when (categoryRepository.deleteCategory(categoryId)) {
                 is Resource.Success -> loadCategories()
                 is Resource.Error -> {
-                    _uiState.value = _uiState.value.copy(error = "Failed to delete category")
+                    _uiState.value = _uiState.value.copy(error = result.message)
                 }
                 is Resource.Loading -> {}
             }
