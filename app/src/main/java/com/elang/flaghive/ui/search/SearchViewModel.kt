@@ -57,6 +57,7 @@ class SearchViewModel @Inject constructor(
                 is Resource.Success -> {
                     allResults = result.data
                     applyFilters()
+                    _uiState.value = _uiState.value.copy(isLoading = false)
                 }
                 is Resource.Error -> {
                     _uiState.value = _uiState.value.copy(
@@ -97,6 +98,6 @@ class SearchViewModel @Inject constructor(
             filtered = filtered.filter { it.categoryId == selectedCategoryId }
         }
 
-        _uiState.value = _uiState.value.copy(results = filtered, isLoading = false)
+        _uiState.value = _uiState.value.copy(results = filtered)
     }
 }
