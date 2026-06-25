@@ -145,7 +145,7 @@ fun FlagHiveApp(
             }
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
+        Box(modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())) {
             NavGraph(
                 navController = navController,
                 isLoggedIn = isLoggedIn,
